@@ -1,2 +1,0 @@
-W:\Boxer\x64\Debug\Boxer.exe
-W:\Boxer\x64\Debug\Boxer.pdb

@@ -20,12 +20,17 @@ int main(int argc, char** argv) {
 
 	// Window stuff
 	boxer::Window wnd("Application", 1600, 900);
+
+	// Displays the window
 	wnd.Show();
 
-	while(1) {
+	while(!wnd.ShouldClose()) {
+		// Polls OS for events
 		wnd.Update();
 	}
-	wnd.Close();
 	
+	// Cleans up
+	wnd.Close();
+
 	return 0;
 }

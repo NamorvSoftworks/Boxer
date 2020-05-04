@@ -9,6 +9,7 @@ namespace boxer {
 		
 		String _Title;
 		U32 _Width, _Height;
+		bool _ShouldClose;
 	public:
 		Window(String title, U32 width, U32 height);
 		~Window();
@@ -16,5 +17,7 @@ namespace boxer {
 		void Show();
 		void Update();
 		void Close();
+
+		inline bool ShouldClose() const { return _ShouldClose; }
 	};
 }

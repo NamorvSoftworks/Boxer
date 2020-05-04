@@ -19,7 +19,7 @@ namespace boxer {
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	// TODO(NeGate): Define the Win32 implementation!
-	Window::Window(String title, U32 width, U32 height) : _Title(title), _Width(width), _Height(height) {
+	Window::Window(String title, U32 width, U32 height) : _Title(title), _Width(width), _Height(height), _ShouldClose(false) {
 		Win32Handle* win32 = new Win32Handle();
 		_Handle = win32;
 
@@ -70,6 +70,8 @@ namespace boxer {
 			ASSERT(0, "Win32: Failed to create a window.");
 			return;
 		}
+
+		SetWindowLongPtrW(win32->hWnd, GWLP_USERDATA, this);
 	}
 
 	Window::~Window() {
@@ -86,7 +88,9 @@ namespace boxer {
 	}
 
 	void Window::Update() {
-		// TODO: Setup message queue
+		Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
+
+		// TODO(NeGate): Setup message queue
 		MSG message;
 		while (PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE) > 0) {
 			TranslateMessage(&message);
@@ -95,10 +99,23 @@ namespace boxer {
 	}
 
 	void Window::Close() {
-
+		Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
+		PostQuitMessage(0);
 	}
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+		void* ptr = (void*)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+		Window* window = reinterpret_cast<Window*>(ptr);
+
+		switch (message) {
+		case WM_DESTROY:
+		case WM_CLOSE:
+			// TODO(NeGate): Implement weird message system
+			break;
+		default:
+			break;
+		}
+
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 }

@@ -9,6 +9,7 @@
 int main(int argc, char** argv) {
 	using boxer::String;
 
+	// Random testing, remove later
 	String str("Hello, World!");
 	printf("%.*s!\n", static_cast<int>(str.Length()), str.Data());
 	
@@ -17,6 +18,7 @@ int main(int argc, char** argv) {
 	
 	const char* string = str;
 
+	// Window stuff
 	boxer::Window wnd("Application", 1600, 900);
 	wnd.Show();
 
@@ -24,5 +26,6 @@ int main(int argc, char** argv) {
 		wnd.Update();
 	}
 	wnd.Close();
+	
 	return 0;
 }

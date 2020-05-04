@@ -86,6 +86,19 @@ namespace boxer {
 		}
 
 		// NOTE(NeGate): You have to delete the memory for this!
+		inline wchar_t* Unicode() const {
+			// TODO(NeGate): This is probably broken.
+			wchar_t* str = new wchar_t[_Length + 1];
+			for(U64 i = 0; i < _Length; i++) {
+				str[i] = static_cast<wchar_t>(_Data[i]);
+			}
+			str[_Length] = 0;
+
+			// NOTE(NeGate): Use Defer if you don't want to worry about deleting it.
+			return str;
+		}
+
+		// NOTE(NeGate): You have to delete the memory for this!
 		inline char* CStr() const {
 			char* cstr = new char[_Length + 1];
 			memcpy(cstr, _Data, _Length);

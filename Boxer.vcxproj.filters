@@ -18,7 +18,7 @@
     <ClCompile Include="src\Boxer\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Boxer\Platform\Win32\Win32Window.cpp">
+    <ClCompile Include="src\Boxer\Platform\Win32\Win32Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -36,6 +36,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Boxer\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Boxer\Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Boxer\App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

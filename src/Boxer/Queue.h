@@ -6,19 +6,19 @@
 
 namespace boxer {
     template<class T>
-    struct Array {
+    struct Queue {
         size_t _Size;
         size_t _Capacity;
 
         T* _Elements;
         
-        inline Array() {
+        inline Queue() {
             _Size = 0;
             _Capacity = 0;
             _Elements = nullptr;
         }
 
-        inline Array(const size_t capacity) {
+        inline Queue(const size_t capacity) {
             _Size = 0;
             _Capacity = capacity;
 
@@ -26,7 +26,7 @@ namespace boxer {
             _Elements = (T*)malloc(_Capacity * sizeof(T));
         }
 
-        inline ~Array() {
+        inline ~Queue() {
             Delete();
         }
 
@@ -39,15 +39,6 @@ namespace boxer {
             _Size = 0;
         }
 
-        inline void ShrinkToFit() {
-            if (_Size != _Capacity) {
-                void* old = _Elements;
-                _Elements = (T*)realloc((void*)_Elements, _Size * sizeof(T));
-                if(_Elements == nullptr) free(old); // If the realloc fails, free the old pointer
-                
-                _Capacity = _Size;
-            }
-        }
         inline void Resize(const size_t size) {
             if (_Size != size) {
                 _Size = size;
@@ -65,7 +56,7 @@ namespace boxer {
         }
         inline void ReserveCapacity(size_t size) {
             if (size >= _Capacity) {
-                _Capacity = size + 16;
+                _Capacity = size * 2;
 
                 void* old = _Elements;
                 _Elements = (T*)realloc((void*)_Elements, _Capacity * sizeof(T));
@@ -73,7 +64,7 @@ namespace boxer {
             }
         }
 
-        inline size_t Add(const T& elem) {
+        inline size_t Enqueue(const T& elem) {
             ReserveCapacity(_Size);
 
             memcpy(
@@ -84,30 +75,16 @@ namespace boxer {
             _Size++;
             return _Size - 1;
         }
-        inline T& AddEmpty() {
-            // Just reserves the space without calling any constructors.
-            ReserveCapacity(_Size);
-            _Size++;
-            return _Elements[_Size - 1];
-        }
-        inline void Remove(size_t index) {
-            if (_Size > 1) {
-                memcpy(
-                    (void*)(&_Elements[index]),
-                    (const void*)(&_Elements[_Size - 1]),
-                    sizeof(T)
-                );
-            }
+        inline void Dequeue() {
+            // TODO: Test this, its probably broken
             _Size--;
+            memmove(
+                (void*)(_Elements),
+                (const void*)(&_Elements[1]),
+                sizeof(T) * _Size
+            );
         }
-
-        inline void Push(T elem) {
-            Add(elem);
-        }
-        inline T& Pop() {
-            _Size--;
-            return _Elements[_Size];
-        }
+        
         inline size_t IndexOf(T elem) {
             for (size_t i = 0; i < _Size; i++) {
                 if (_Elements[i] == elem) {
@@ -118,7 +95,7 @@ namespace boxer {
             return -1;
         }
 
-        inline Array<T>& operator+=(T& t) {
+        inline Queue<T>& operator+=(T& t) {
             Add(t);
             return *this;
         }

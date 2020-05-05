@@ -82,12 +82,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Boxer\Platform\Win32\Win32Window.cpp" />
+    <ClCompile Include="src\Boxer\Platform\Win32\Win32Application.cpp" />
     <ClCompile Include="src\Boxer\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Boxer\App.h" />
     <ClInclude Include="src\Boxer\Array.h" />
     <ClInclude Include="src\Boxer\Common.h" />
+    <ClInclude Include="src\Boxer\Queue.h" />
     <ClInclude Include="src\Boxer\Result.h" />
     <ClInclude Include="src\Boxer\String.h" />
     <ClInclude Include="src\Boxer\Window.h" />

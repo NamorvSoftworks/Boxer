@@ -3,34 +3,12 @@
 // - NeGate (May 3, 2019)
 #include "Common.h"
 #include "String.h"
-#include "Window.h"
+#include "App.h"
 #include <stdio.h>
 
 int main(int argc, char** argv) {
-	using boxer::String;
-
-	// Random testing, remove later
-	String str("Hello, World!");
-	printf("%.*s!\n", static_cast<int>(str.Length()), str.Data());
-	
-	str = "Bye, World!";
-	printf("%.*s!\n", static_cast<int>(str.Length()), static_cast<const char*>(str));
-	
-	const char* string = str;
-
 	// Window stuff
-	boxer::Window wnd("Application", 1600, 900);
-
-	// Displays the window
-	wnd.Show();
-
-	while(!wnd.ShouldClose()) {
-		// Polls OS for events
-		wnd.Update();
-	}
-	
-	// Cleans up
-	wnd.Close();
-
+	boxer::Application app("Application", 1600, 900);
+	app.Launch();
 	return 0;
 }

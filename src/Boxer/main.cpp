@@ -6,6 +6,8 @@
 #include "App.h"
 #include <stdio.h>
 
+#include <string>
+
 int main(int argc, char** argv) {
 	// Window stuff
 	boxer::Application app("Application", 1600, 900);

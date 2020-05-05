@@ -214,5 +214,13 @@ namespace boxer {
 		inline bool Empty() const {
 			return _Length == 0;
 		}
+
+		// For iterators
+		inline const char& begin() const {
+			return _Data[0];
+		}
+		inline const char& end() const {
+			return _Data[_Length - 1];
+		}
 	};
 }

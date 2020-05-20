@@ -1,12 +1,9 @@
 // I added a `PLATFORM_WINDOWS` to the preprocessor defines
 // because i needed it and you cant stop me!
-// - NeGate (May 3, 2019)
+// - NeGate (May 3, 2020)
 #include "Common.h"
 #include "String.h"
 #include "App.h"
-#include <stdio.h>
-
-#include <string>
 
 int main(int argc, char** argv) {
 	// Window stuff

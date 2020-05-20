@@ -86,6 +86,7 @@ namespace boxer {
 		}
 
 		// NOTE(NeGate): You have to delete the memory for this!
+		// NOTE(NeGate): Use Defer if you don't want to worry about deleting it.
 		inline wchar_t* Unicode() const {
 			// TODO(NeGate): This is probably broken.
 			wchar_t* str = new wchar_t[_Length + 1];
@@ -94,17 +95,16 @@ namespace boxer {
 			}
 			str[_Length] = 0;
 
-			// NOTE(NeGate): Use Defer if you don't want to worry about deleting it.
 			return str;
 		}
 
 		// NOTE(NeGate): You have to delete the memory for this!
+		// NOTE(NeGate): Use Defer if you don't want to worry about deleting it.
 		inline char* CStr() const {
 			char* cstr = new char[_Length + 1];
 			memcpy(cstr, _Data, _Length);
 			cstr[_Length] = 0;
 
-			// NOTE(NeGate): Use Defer if you don't want to worry about deleting it.
 			return cstr;
 		}
 

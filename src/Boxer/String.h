@@ -19,7 +19,7 @@ namespace boxer {
 		inline String() = default;
 
 		// Converts a null-terminated string
-		inline String(const char* str) {
+		inline explicit String(const char* str) {
 			_Length = strlen(str);
 			_Data = str;
 		}
@@ -49,10 +49,10 @@ namespace boxer {
 
 			String res(_Data, _Length);
 
-			const char* end = _Data + (_Length-1);
-			while (end != _Data && IsWhitespace(*end)) {
+			const char* strEnd = _Data + (_Length-1);
+			while (strEnd != _Data && IsWhitespace(*strEnd)) {
 				res._Length--;
-				end--;
+				strEnd--;
 			}
 
 			return res;

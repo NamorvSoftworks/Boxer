@@ -82,8 +82,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Boxer\Platform\Win32\Win32Application.cpp" />
     <ClCompile Include="src\Boxer\main.cpp" />
+    <ClCompile Include="src\Boxer\Platform\Win32\Win32Application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Boxer\App.h" />

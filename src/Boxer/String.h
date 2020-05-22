@@ -19,7 +19,7 @@ namespace boxer {
 		inline String() = default;
 
 		// Converts a null-terminated string
-		inline explicit String(const char* str) {
+		inline String(const char* str) {
 			_Length = strlen(str);
 			_Data = str;
 		}

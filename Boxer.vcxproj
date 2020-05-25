@@ -63,6 +63,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;PLATFORM_WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;.</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,12 +91,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Boxer\main.cpp" />
+    <ClCompile Include="src\Boxer\Math.cpp" />
     <ClCompile Include="src\Boxer\Platform\Win32\Win32Application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Boxer\App.h" />
     <ClInclude Include="src\Boxer\Array.h" />
     <ClInclude Include="src\Boxer\Common.h" />
+    <ClInclude Include="src\Boxer\Math.h" />
     <ClInclude Include="src\Boxer\GL.h" />
     <ClInclude Include="src\Boxer\Queue.h" />
     <ClInclude Include="src\Boxer\Result.h" />

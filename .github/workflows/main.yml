@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ ci ]
   pull_request:
-    branches: [ master ]
+    branches: [ ci ]
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.0
 

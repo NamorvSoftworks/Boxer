@@ -46,14 +46,14 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\Intermediates\</IntDir>
-    <LibraryPath>$(SolutionDir)misc\GLEW\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)misc\GLEW\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)misc\GLEW\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\Intermediates\</IntDir>
-    <LibraryPath>$(SolutionDir)misc\GLEW\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)misc\GLEW\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)misc\GLEW\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

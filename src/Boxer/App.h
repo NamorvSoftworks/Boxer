@@ -2,6 +2,7 @@
 #include "String.h"
 #include "Result.h"
 #include "Queue.h"
+#include "GL.h"
 
 namespace boxer {
 	enum class EventType : U32 {

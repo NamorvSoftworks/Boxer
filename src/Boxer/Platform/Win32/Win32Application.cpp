@@ -17,9 +17,25 @@ namespace boxer {
 		// Its an application constant. GetModuleHandleW(0);
 		HINSTANCE	hInstance;
 		HWND		hWnd;
+		HDC			hDC;
+		HGLRC		hGL;
 	};
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+	static PIXELFORMATDESCRIPTOR GetPixelFormat() {
+		PIXELFORMATDESCRIPTOR result = {};
+		result.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+		result.nVersion = 1;
+		result.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+		result.iPixelType = PFD_TYPE_RGBA;
+		result.cColorBits = 32;
+		result.cDepthBits = 24;
+		result.cStencilBits = 8;
+		result.cAuxBuffers = 0;
+		result.iLayerType = PFD_MAIN_PLANE;
+		return result;
+	}
 
 	Application::Application(String title, U32 width, U32 height) : _Title(title), _Width(width), _Height(height) {
 		Win32Handle* win32 = new Win32Handle();
@@ -77,12 +93,30 @@ namespace boxer {
 
 		ShowWindow(win32->hWnd, SW_SHOW);
 		SetFocus(win32->hWnd);
+
+		PIXELFORMATDESCRIPTOR pfd = GetPixelFormat();
+
+		win32->hDC = GetDC(win32->hWnd);
+
+		int format = ChoosePixelFormat(win32->hDC, &pfd);
+		SetPixelFormat(win32->hDC, format, &pfd);
+
+		win32->hGL = wglCreateContext(win32->hDC);
+		wglMakeCurrent(win32->hDC, win32->hGL);
+
+		GLenum err = glewInit();
+		if (GLEW_OK != err) {
+			/* Problem: glewInit failed, something is seriously wrong. */
+			const char* errorStr = (const char*)glewGetErrorString(err);
+			ASSERT(0, errorStr);
+		}
 	}
 
 	void Application::Launch() {
-		//Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
+		Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
 
 		// Event handling
+		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 		while(1) {
 			MSG message;
 			if (PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE) > 0) {
@@ -91,13 +125,20 @@ namespace boxer {
 			}
 
 			if (message.message == WM_QUIT) break;
+
+			GLCall(glViewport(0, 0, _Width, _Height));
+			GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+			SwapBuffers(win32->hDC);
 		}
 
 		Close();
 	}
 
 	void Application::Close() {
-		//Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
+		Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
+
+		wglDeleteContext(win32->hGL);
 
 		UnregisterClassW(CLASS_NAME, GetModuleHandleW(nullptr));
 		PostQuitMessage(0);

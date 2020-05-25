@@ -27,7 +27,7 @@
     <iOSTargetsPath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\MDD\iOS\V150\</iOSTargetsPath>
     <_DirectorySolutionPropsFile>Directory.Solution.props</_DirectorySolutionPropsFile>
     <_DirectorySolutionPropsBasePath />
-    <AspNetConfiguration>Release</AspNetConfiguration>
+    <AspNetConfiguration>Debug</AspNetConfiguration>
     <SolutionDir>W:\Boxer\</SolutionDir>
     <SolutionExt>.sln</SolutionExt>
     <SolutionFileName>Boxer.sln</SolutionFileName>
@@ -36,7 +36,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <CurrentSolutionConfigurationContents>
       <SolutionConfiguration xmlns="">
-  <ProjectConfiguration Project="{C2BF0108-8E83-4090-A369-94E56F5E993E}" AbsolutePath="W:\Boxer\Boxer.vcxproj" BuildProjectInSolution="True">Release|x64</ProjectConfiguration>
+  <ProjectConfiguration Project="{C2BF0108-8E83-4090-A369-94E56F5E993E}" AbsolutePath="W:\Boxer\Boxer.vcxproj" BuildProjectInSolution="True">Debug|x64</ProjectConfiguration>
 </SolutionConfiguration>
     </CurrentSolutionConfigurationContents>
     <NuGetRestoreTargets>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\..\Common7\IDE\CommonExtensions\Microsoft\NuGet\NuGet.targets</NuGetRestoreTargets>
@@ -90,8 +90,8 @@
       <ToolsVersion>
       </ToolsVersion>
       <SkipNonexistentProjects>False</SkipNonexistentProjects>
-      <AdditionalProperties>Configuration=Release; Platform=x64</AdditionalProperties>
-      <Configuration>Release</Configuration>
+      <AdditionalProperties>Configuration=Debug; Platform=x64</AdditionalProperties>
+      <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectReference>
   </ItemGroup>
@@ -301,19 +301,19 @@
     <MSBuild Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" Properties="BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" SkipNonexistentProjects="%(ProjectReference.SkipNonexistentProjects)" />
   </Target>
   <Target Name="Boxer" Outputs="@(BoxerBuildOutput)">
-    <MSBuild Condition="'%(ProjectReference.Identity)' == 'W:\Boxer\Boxer.vcxproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Release; Platform=x64;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == 'W:\Boxer\Boxer.vcxproj'" Projects="@(ProjectReference)" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=x64;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
       <Output TaskParameter="TargetOutputs" ItemName="BoxerBuildOutput" />
     </MSBuild>
   </Target>
   <Target Name="Boxer:Clean">
-    <MSBuild Condition="'%(ProjectReference.Identity)' == 'W:\Boxer\Boxer.vcxproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Release; Platform=x64;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+    <MSBuild Condition="'%(ProjectReference.Identity)' == 'W:\Boxer\Boxer.vcxproj'" Projects="@(ProjectReference)" Targets="Clean" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=x64;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
   </Target>
   <Target Name="Boxer:Rebuild" Outputs="@(BoxerBuildOutput)">
-    <MSBuild Condition="'%(ProjectReference.Identity)' == 'W:\Boxer\Boxer.vcxproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Release; Platform=x64;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
+    <MSBuild Condition="'%(ProjectReference.Identity)' == 'W:\Boxer\Boxer.vcxproj'" Projects="@(ProjectReference)" Targets="Rebuild" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=x64;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)">
       <Output TaskParameter="TargetOutputs" ItemName="BoxerBuildOutput" />
     </MSBuild>
   </Target>
   <Target Name="Boxer:Publish">
-    <MSBuild Condition="'%(ProjectReference.Identity)' == 'W:\Boxer\Boxer.vcxproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Release; Platform=x64;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
+    <MSBuild Condition="'%(ProjectReference.Identity)' == 'W:\Boxer\Boxer.vcxproj'" Projects="@(ProjectReference)" Targets="Publish" BuildInParallel="True" ToolsVersion="$(ProjectToolsVersion)" Properties="Configuration=Debug; Platform=x64;BuildingSolutionFile=true; CurrentSolutionConfigurationContents=$(CurrentSolutionConfigurationContents); SolutionDir=$(SolutionDir); SolutionExt=$(SolutionExt); SolutionFileName=$(SolutionFileName); SolutionName=$(SolutionName); SolutionPath=$(SolutionPath)" />
   </Target>
 </Project>

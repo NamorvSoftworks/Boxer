@@ -1,6 +1,6 @@
 #ifdef PLATFORM_WINDOWS
 
-#include <Boxer/App.h>
+#include "../../App.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN

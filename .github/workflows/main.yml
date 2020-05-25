@@ -19,4 +19,4 @@ jobs:
     - name: Build project
       run: |
         set msbuildemitsolution=1
-        msbuild.exe Boxer.sln -m /p:Configuration=Release
+        msbuild.exe Boxer.sln -m /p:Configuration=Debug

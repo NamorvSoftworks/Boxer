@@ -16,7 +16,12 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.0
 
-    - name: Build project
+    - name: Build debug
       run: |
         set msbuildemitsolution=1
         msbuild.exe Boxer.sln -m /p:Configuration=Debug
+    
+    - name: Build release
+      run: |
+        set msbuildemitsolution=1
+        msbuild.exe Boxer.sln -m /p:Configuration=Release

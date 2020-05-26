@@ -9,7 +9,7 @@ namespace boxer {
 	inline static bool IsWhitespace(char c) {
 		return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 	}
-
+	
 	class String {
 	private:
 		size_t _Length;
@@ -85,6 +85,17 @@ namespace boxer {
 			return SubString(off);
 		}
 
+		template<size_t _Size>
+		inline void Unicode(wchar_t (&out)[_Size], size_t outLength = _Size) const {
+			// TODO(NeGate): This is probably broken.
+			ASSERT(outLength >= _Length + 1);
+
+			for (U64 i = 0; i < _Length; i++) {
+				out[i] = static_cast<wchar_t>(_Data[i]);
+			}
+			out[_Length] = '\0';
+		}
+
 		// NOTE(NeGate): You have to delete the memory for this!
 		// NOTE(NeGate): Use Defer if you don't want to worry about deleting it.
 		inline wchar_t* Unicode() const {
@@ -93,7 +104,7 @@ namespace boxer {
 			for(U64 i = 0; i < _Length; i++) {
 				str[i] = static_cast<wchar_t>(_Data[i]);
 			}
-			str[_Length] = 0;
+			str[_Length] = '\0';
 
 			return str;
 		}

@@ -103,6 +103,7 @@
     <ClInclude Include="src\Boxer\Queue.h" />
     <ClInclude Include="src\Boxer\Result.h" />
     <ClInclude Include="src\Boxer\String.h" />
+    <ClInclude Include="src\Boxer\Timer.h" />
     <ClInclude Include="src\Boxer\Window.h" />
   </ItemGroup>
   <ItemGroup>

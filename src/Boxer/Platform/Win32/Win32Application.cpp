@@ -1,11 +1,15 @@
 #ifdef PLATFORM_WINDOWS
 
-#include <Boxer/App.h>
+#include "Boxer/App.h"
+#include "Boxer/Timer.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <Windows.h>
+
+// WGL Extensions
+typedef int* (__stdcall WGLSWAPINTERVALEXT)(int value);
 
 namespace boxer {
 	// TODO(NeGate): Allow for multiple windows, this would require different
@@ -22,6 +26,25 @@ namespace boxer {
 	};
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+	// NOTE(NeGate): These are some platform-specific globals.
+	LARGE_INTEGER m_Start;
+	F64 m_Frequency;
+
+	// Time in seconds
+	F64 Timer::Now() {
+		LARGE_INTEGER current;
+		QueryPerformanceCounter(&current);
+		U64 cycles = current.QuadPart - m_Start.QuadPart;
+
+		return (cycles * m_Frequency);
+	}
+
+	// Debugging purposes
+	U64 Timer::NowInCycles() {
+		// NOTE(NeGate): This isnt a Win32 specific function, its an x64 instruction.
+		return __rdtsc();
+	}
 
 	static PIXELFORMATDESCRIPTOR GetPixelFormat() {
 		PIXELFORMATDESCRIPTOR result = {};
@@ -65,8 +88,8 @@ namespace boxer {
 		rect.left = (rect.right / 2) - ((_Width + 16) / 2);
 		rect.top = (rect.bottom / 2) - ((_Height + 39) / 2);
 
-		wchar_t* titleStr = title.Unicode();
-		Defer(delete[] titleStr);
+		wchar_t titleStr[64];
+		title.Unicode(titleStr);
 
 		// Create the window.
 		win32->hWnd = CreateWindowExW(
@@ -110,14 +133,39 @@ namespace boxer {
 			const char* errorStr = (const char*)glewGetErrorString(err);
 			ASSERT(0, errorStr);
 		}
+
+		// This looks nasty
+		// TODO: Migrate this
+		WGLSWAPINTERVALEXT* wglSwapIntervalEXT = (WGLSWAPINTERVALEXT*)wglGetProcAddress("wglSwapIntervalEXT");
+		wglSwapIntervalEXT(0);
 	}
 
 	void Application::Launch() {
 		Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
 
-		// Event handling
+		// Initialize Timer
+		LARGE_INTEGER frequency;
+		QueryPerformanceFrequency(&frequency);
+		m_Frequency = 1.0 / F64(frequency.QuadPart);
+		QueryPerformanceCounter(&m_Start);
+		
+		// Used to eep
+		F64 lastT, nowT, elapsedT;
+		lastT = Timer::Now();
+
+		// No you wont run the game at more than 2 billion fps...
+		U32 FPS = 0;
+		F64 fpsTimer = 0.0;
+
+		// You can change this.
+		F64 maxFps = 300.0;
+		F64 minFrametime = 1.0 / maxFps;
+
+		// Initialize GL
 		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+
 		while(1) {
+			// Event handling
 			MSG message;
 			if (PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE) > 0) {
 				TranslateMessage(&message);
@@ -126,10 +174,43 @@ namespace boxer {
 
 			if (message.message == WM_QUIT) break;
 
-			GLCall(glViewport(0, 0, _Width, _Height));
-			GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+			// FPS limiter.
+			do {
+				nowT = Timer::Now();
+				elapsedT = nowT - lastT;
+			} while (elapsedT < minFrametime);
 
-			SwapBuffers(win32->hDC);
+			// TODO: Update the game
+			{
+
+			}
+
+			// Render the game
+			{
+				GLCall(glViewport(0, 0, _Width, _Height));
+				GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+				SwapBuffers(win32->hDC);
+				FPS++;
+			}
+
+			// FPS Counter
+			fpsTimer += elapsedT;
+
+			if (fpsTimer > 1.0) {
+				wchar_t titleStr[64];
+				_Title.Unicode(titleStr);
+
+				wchar_t temp[64];
+				swprintf_s(temp, L"%.*s - FPS %d\n", _Title.Length(), titleStr, FPS);
+				SetWindowText(win32->hWnd, temp);
+
+				fpsTimer -= 1.0;
+				FPS = 0;
+			}
+
+			// Advance to the next frame
+			lastT = nowT;
 		}
 
 		Close();

@@ -53,6 +53,9 @@
     <ClInclude Include="src\Boxer\GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Boxer\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />

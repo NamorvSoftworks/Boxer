@@ -1,7 +1,7 @@
 //Copyright (c) 2020 Namorv Softworks
 #include "Common.h"
 #include "Math.h"
-#include <math.h> // get the sqrtf intrinsic from here
+#include <cmath> // get the sqrtf intrinsic from here
 
 namespace boxer {
 
@@ -76,7 +76,27 @@ namespace boxer {
 		};
 	}
 
+
+	// matrix conversion
+	matrix Quat::to_matrix()const {
+		using std::sqrt;
+		using std::fabs;
+		const F32
+			normal = normalize(),
+			r = w * normal,
+			i = x * normal,
+			j = y * normal,
+			k = z * normal;
+		return {
+			{1.f - 2.f * sqrt(fabs(j * j + k * k)), 2.f * sqrt(fabs(i * k - k * r)),       2.f * sqrt(fabs(i * k + j * r)),       0.f},
+			{2.f * sqrt(fabs(r * j + k * r)),       1.f - 2.f * sqrt(fabs(i * i + k * k)), 2.f * sqrt(fabs(j * k - i * r)),       0.f},
+			{2.f * sqrt(fabs(i * k - j * r)),       2.f * sqrt(fabs(j * k + i * r)),       1.f - 2.f * sqrt(fabs(i * i + j * j)), 0.f},
+			{0.f,                          0.f,                          0.f,                          1.f}
+		};
+	}
+
 	F32	Quat::normalize()const {
+		using std::sqrtf;
 		ASSERT(w || x || y || z, "division by zero");
 		return 1.f / sqrtf(w * w + x * x + y * y + z * z);
 	}

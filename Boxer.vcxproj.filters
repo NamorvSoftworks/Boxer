@@ -21,6 +21,15 @@
     <ClCompile Include="src\Boxer\Platform\Win32\Win32Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Boxer\Graphics\Buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Boxer\Graphics\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Boxer\Platform\Win32\Win32File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Boxer\Array.h">
@@ -47,8 +56,22 @@
     <ClInclude Include="src\Boxer\GL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Boxer\Graphics\Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Boxer\Graphics\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Boxer\File.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="assets\Standard.frag" />
+    <None Include="assets\Standard.vert" />
   </ItemGroup>
 </Project>

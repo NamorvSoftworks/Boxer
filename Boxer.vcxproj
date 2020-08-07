@@ -64,6 +64,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>src;.</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -91,15 +93,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Boxer\main.cpp" />
-    <ClCompile Include="src\Boxer\Math.cpp" />
     <ClCompile Include="src\Boxer\Platform\Win32\Win32Application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Boxer\App.h" />
     <ClInclude Include="src\Boxer\Array.h" />
     <ClInclude Include="src\Boxer\Common.h" />
-    <ClInclude Include="src\Boxer\Math.h" />
+    <ClInclude Include="src\Boxer\Math\Mat4x4.h" />
+    <ClInclude Include="src\Boxer\Math\Math.h" />
     <ClInclude Include="src\Boxer\GL.h" />
+    <ClInclude Include="src\Boxer\Math\MathFunctions.h" />
+    <ClInclude Include="src\Boxer\Math\Vec4.h" />
     <ClInclude Include="src\Boxer\Queue.h" />
     <ClInclude Include="src\Boxer\Result.h" />
     <ClInclude Include="src\Boxer\String.h" />

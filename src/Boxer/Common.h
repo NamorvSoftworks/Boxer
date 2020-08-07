@@ -3,6 +3,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
+#include <immintrin.h>
 
 typedef signed char			I8;
 typedef signed short		I16;
@@ -40,10 +44,17 @@ DeferInternal<F> defer_func(F f) {
 // Just basic assertion code
 #define ASSERT(...) AssertFunc(__VA_ARGS__);
 
+#ifdef _MSC_VER
+#define INLINE __forceinline
+#else
+// IDK
+#define INLINE
+#endif
+
 // TODO(NeGate): Clean up!
 inline void AssertFunc(bool condition, const char* err = nullptr) {
 	if(!condition) {
-		printf("Fuck! %s\n", (err != nullptr) ? err : "");
+		printf("Darn! %s\n", (err != nullptr) ? err : "");
 		__debugbreak();
 	}
 }

@@ -4,6 +4,8 @@
 
 namespace boxer {
 	struct Timer {
+		static void Initialize();
+
 		// Time in seconds
 		static F64 Now();
 		

@@ -27,25 +27,6 @@ namespace boxer {
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-	// NOTE(NeGate): These are some platform-specific globals.
-	LARGE_INTEGER m_Start;
-	F64 m_Frequency;
-
-	// Time in seconds
-	F64 Timer::Now() {
-		LARGE_INTEGER current;
-		QueryPerformanceCounter(&current);
-		U64 cycles = current.QuadPart - m_Start.QuadPart;
-
-		return (cycles * m_Frequency);
-	}
-
-	// Debugging purposes
-	U64 Timer::NowInCycles() {
-		// NOTE(NeGate): This isnt a Win32 specific function, its an x64 instruction.
-		return __rdtsc();
-	}
-
 	static PIXELFORMATDESCRIPTOR GetPixelFormat() {
 		PIXELFORMATDESCRIPTOR result = {};
 		result.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -75,42 +56,42 @@ namespace boxer {
 		wc.lpszClassName = CLASS_NAME;
 		wc.hCursor = NULL;
 
-		if (RegisterClassExW(&wc) == 0) {
-			// TODO(NeGate): We need a logging system
-			ASSERT(false, "Win32: Failed to register window class.");
-		}
+		ASSERT(RegisterClassExW(&wc), "Win32: Failed to register window class.");
 
 		const DWORD style = WS_OVERLAPPEDWINDOW;
 		const DWORD exStyle = WS_EX_APPWINDOW;
 
-		RECT rect;
-		GetClientRect(GetDesktopWindow(), &rect);
-		rect.left = (rect.right / 2) - ((_Width + 16) / 2);
-		rect.top = (rect.bottom / 2) - ((_Height + 39) / 2);
-
 		wchar_t titleStr[64];
 		title.Unicode(titleStr);
 
+		// Get the size of the border.
+		RECT borderRect = { 0, 0, 0, 0 };
+		AdjustWindowRectEx(&borderRect, style, false, exStyle);
+
+		RECT rect;
+		GetClientRect(GetDesktopWindow(), &rect);
+
+		int X = (rect.right / 2) - (_Width / 2);
+		int Y = (rect.bottom / 2) - (_Height / 2);
+		int Width = _Width;
+		int Height = _Height;
+
+		// Border rectangle in this case is negative.
+		X += borderRect.left;
+		Y += borderRect.top;
+
+		// Grow the window size by the OS border. This makes the client width/height correct.
+		Width += borderRect.right - borderRect.left;
+		Height += borderRect.bottom - borderRect.top;
+
 		// Create the window.
 		win32->hWnd = CreateWindowExW(
-			exStyle,
-			CLASS_NAME,
-			titleStr,
-			style,
-			rect.left,
-			rect.top,
-			_Width + 16, // Windows is weird, this makes it so that _Width and _Height
-			_Height + 39, // are the actually size of the window's viewport.
-			0,
-			0,
-			win32->hInstance,
-			0
+			exStyle, CLASS_NAME, titleStr, style,
+			X, Y, Width, Height,
+			0, 0, win32->hInstance, 0
 		);
 
-		if (win32->hWnd == NULL) {
-			ASSERT(0, "Win32: Failed to create a window.");
-			return;
-		}
+		ASSERT(win32->hWnd, "Win32: Failed to create a window.");
 
 		SetWindowLongPtrW(win32->hWnd, GWLP_USERDATA, (LONG_PTR)this);
 
@@ -128,8 +109,7 @@ namespace boxer {
 		wglMakeCurrent(win32->hDC, win32->hGL);
 
 		GLenum err = glewInit();
-		if (GLEW_OK != err) {
-			/* Problem: glewInit failed, something is seriously wrong. */
+		if (err != GLEW_OK) {
 			const char* errorStr = (const char*)glewGetErrorString(err);
 			ASSERT(0, errorStr);
 		}
@@ -137,23 +117,21 @@ namespace boxer {
 		// This looks nasty
 		// TODO: Migrate this
 		WGLSWAPINTERVALEXT* wglSwapIntervalEXT = (WGLSWAPINTERVALEXT*)wglGetProcAddress("wglSwapIntervalEXT");
+
+		// wglSwapIntervalEXT is the function to enable/disable vsync
 		wglSwapIntervalEXT(0);
 	}
 
 	void Application::Launch() {
 		Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
 
-		// Initialize Timer
-		LARGE_INTEGER frequency;
-		QueryPerformanceFrequency(&frequency);
-		m_Frequency = 1.0 / F64(frequency.QuadPart);
-		QueryPerformanceCounter(&m_Start);
-		
-		// Used to eep
+		Timer::Initialize();
+
+		// Used to Sleep
 		F64 lastT, nowT, elapsedT;
 		lastT = Timer::Now();
 
-		// No you wont run the game at more than 2 billion fps...
+		// No you wont run the game at more than 4 billion fps...
 		U32 FPS = 0;
 		F64 fpsTimer = 0.0;
 
@@ -167,7 +145,7 @@ namespace boxer {
 		while(1) {
 			// Event handling
 			MSG message;
-			if (PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE) > 0) {
+			if (GetMessage(&message, NULL, NULL, NULL) > 0) {
 				TranslateMessage(&message);
 				DispatchMessage(&message);
 			}

@@ -1,10 +1,10 @@
 #version 450 core
 
-layout(location = 0) in vec3 vPos;
+layout(location = 0) in vec3 a_Pos;
 
-layout(location = 0) out vec3 fPos;
+layout(location = 0) out vec3 v_Pos;
 
 void main() {
-    fPos = vPos;
-    gl_Position = vec4(vPos, 1.0);
+    v_Pos = a_Pos;
+    gl_Position = vec4(v_Pos, 1.0);
 }

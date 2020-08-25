@@ -256,17 +256,6 @@ namespace boxer {
 			const char* errorStr = (const char*)glewGetErrorString(err);
 
 			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
 			printf("GLEW ERROR: %s\n", errorStr);
 		}
 	}
@@ -275,7 +264,7 @@ namespace boxer {
 		Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
 
 		// Event handling
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
 
 		{
 			glDisable(GL_STENCIL_TEST);
@@ -284,8 +273,8 @@ namespace boxer {
 			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
 			Shader shader;
-			shader.AddShader(FileBlock("assets/Standard.vert").GetData(), GL_VERTEX_SHADER);
-			shader.AddShader(FileBlock("assets/Standard.frag").GetData(), GL_FRAGMENT_SHADER);
+			shader.AddShader(FileBlock("assets/Standard.vert").Data, GL_VERTEX_SHADER);
+			shader.AddShader(FileBlock("assets/Standard.frag").Data, GL_FRAGMENT_SHADER);
 			shader.Compile();
 
 			GLuint VAO;

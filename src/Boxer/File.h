@@ -6,15 +6,12 @@
 namespace boxer {
 	class FileBlock {
 	private:
-		String _Path;
 		void* _Handle;
-		String _Data;
 	public:
+		String Path;
+		String Data;
+
 		FileBlock(String path);
 		~FileBlock();
-
-		// I dont like getters...
-		inline const String& GetData() const { return _Data; }
-		inline const String& GetPath() const { return _Path; }
 	};
 }

@@ -9,7 +9,7 @@
 
 namespace boxer {
 	FileBlock::FileBlock(String path) {
-		_Path = path;
+		Path = path;
 
 		wchar_t* wide_path = path.Unicode();
 		Defer(delete[] wide_path);
@@ -38,11 +38,11 @@ namespace boxer {
 			__debugbreak();
 		}
 
-		_Data = String(FileMemory, (size_t)FileSize.QuadPart);
+		Data = String(FileMemory, (size_t)FileSize.QuadPart);
 	}
 
 	FileBlock::~FileBlock() {
-		UnmapViewOfFile(_Data.Data());
+		UnmapViewOfFile(Data.Data());
 		CloseHandle(_Handle);
 	}
 }

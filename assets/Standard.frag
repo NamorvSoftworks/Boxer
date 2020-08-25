@@ -1,9 +1,9 @@
 #version 450 core
 
-layout(location = 0) in vec3 fPos;
+layout(location = 0) in vec3 v_Pos;
 
-layout(location = 0) out vec4 Color;
+layout(location = 0) out vec4 o_Color;
 
 void main() {
-	Color = vec4(fPos.xyz, 1.0);
+	o_Color = vec4(v_Pos.xyz, 1.0);
 }

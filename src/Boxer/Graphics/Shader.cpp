@@ -29,18 +29,6 @@ namespace boxer {
 			glGetShaderInfoLog(shader, length, &length, error);
 
 			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
 			printf("Shader Error: %s\n", error);
 
 			glDeleteShader(shader);
@@ -63,19 +51,6 @@ namespace boxer {
 
 			glGetProgramInfoLog(_ID, length, &length, error);
 
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
-			// TODO(NeGate): We need a logging system
 			// TODO(NeGate): We need a logging system
 			printf("Program Error: %s\n", error);
 			glDeleteProgram(_ID);

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <Boxer/Common.h>
+#include "Vec4.h"
 #include "MathFunctions.h"
 
 // TODO implement the following:

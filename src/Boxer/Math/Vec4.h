@@ -5,8 +5,7 @@
 
 namespace boxer {
 
-	// NOTE(NeGate): The size of 'Vec3' is 16 bytes on purpose.
-	union Vec4 {
+	__declspec(align(16)) union Vec4 {
 		struct { F32 x, y, z, w; };
 		__m128 Internal;
 

@@ -5,14 +5,14 @@
 
 namespace boxer {
 	struct Shader {
-		GLuint _ID;
+		U32 _ID;
 	public:
 		Shader();
 		~Shader();
 
 		void Bind();
 
-		void AddShader(const char* src, GLenum type);
+		void AddShader(const char* src, U32 type);
 		void Compile();
 	};
 }

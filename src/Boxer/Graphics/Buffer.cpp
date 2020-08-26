@@ -1,7 +1,8 @@
 #include "Buffer.h"
+#include "../GL.h"
 
 namespace boxer {
-	Buffer::Buffer(GLenum target) {
+	Buffer::Buffer(U32 target) {
 		_Target = target;
 		GLCall(glGenBuffers(1, &_ID));
 	}
@@ -18,7 +19,7 @@ namespace boxer {
 		GLCall(glBindBuffer(_Target, 0));
 	}
 
-	void Buffer::Upload(void* data, size_t size, GLenum usage) {
+	void Buffer::Upload(void* data, size_t size, U32 usage) {
 		GLCall(glBufferData(_Target, size, data, usage));
 	}
 }

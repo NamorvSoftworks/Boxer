@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "../GL.h"
 
 namespace boxer {
 	Shader::Shader() {
@@ -13,7 +14,7 @@ namespace boxer {
 		glUseProgram(_ID);
 	}
 
-	void Shader::AddShader(const char* src, GLenum type) {
+	void Shader::AddShader(const char* src, U32 type) {
 		GLuint shader = glCreateShader(type);
 		glShaderSource(shader, 1, &src, 0);
 		glCompileShader(shader);

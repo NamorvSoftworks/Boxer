@@ -108,7 +108,7 @@ namespace boxer {
 		if (GLEW_OK != err) {
 			/* Problem: glewInit failed, something is seriously wrong. */
 			const char* errorStr = (const char*)glewGetErrorString(err);
-			ASSERT(0, errorStr);
+			ASSERT(0, "%s", errorStr);
 		}
 	}
 

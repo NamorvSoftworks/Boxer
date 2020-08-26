@@ -254,9 +254,7 @@ namespace boxer {
 		GLenum err = glewInit();
 		if (err != GLEW_OK) {
 			const char* errorStr = (const char*)glewGetErrorString(err);
-
-			// TODO(NeGate): We need a logging system
-			printf("GLEW ERROR: %s\n", errorStr);
+			ASSERT(0, "GLEW ERROR: %s", errorStr);
 		}
 	}
 

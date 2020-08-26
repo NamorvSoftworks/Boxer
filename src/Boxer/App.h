@@ -2,6 +2,7 @@
 #include "String.h"
 #include "Result.h"
 #include "Queue.h"
+#include "Math/Math.h"
 #include "GL.h"
 
 namespace boxer {

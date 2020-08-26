@@ -127,30 +127,29 @@ namespace boxer {
 
 		Timer::Initialize();
 
-		// Used to Sleep
-		F64 lastT, nowT, elapsedT;
-		lastT = Timer::Now();
-
 		// No you wont run the game at more than 4 billion fps...
 		U32 FPS = 0;
 		F64 fpsTimer = 0.0;
 
 		// You can change this.
 		F64 maxFps = 300.0;
-		F64 minFrametime = 1.0 / maxFps;
+		F64 minFrametime = 0.0;// 1.0 / maxFps;
+
+		F64 lastT, nowT, elapsedT;
+		lastT = Timer::Now();
 
 		// Initialize GL
 		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 
-		while(1) {
+		while (1) {
 			// Event handling
 			MSG message;
-			if (GetMessage(&message, NULL, NULL, NULL) > 0) {
+			if (PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE) > 0) {
 				TranslateMessage(&message);
 				DispatchMessage(&message);
-			}
 
-			if (message.message == WM_QUIT) break;
+				if (message.message == WM_QUIT) break;
+			}
 
 			// FPS limiter.
 			do {

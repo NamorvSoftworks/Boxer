@@ -205,18 +205,6 @@ namespace boxer {
 		{
 			win32->hDC = GetDC(win32->hWnd);
 
-			PIXELFORMATDESCRIPTOR pfd = { sizeof(PIXELFORMATDESCRIPTOR) };
-			pfd.nVersion = 1;
-			pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-			pfd.iPixelType = PFD_TYPE_RGBA;
-			pfd.cColorBits = 32;
-			pfd.cDepthBits = 24;
-			pfd.cStencilBits = 8;
-			pfd.cAuxBuffers = 0;
-			pfd.iLayerType = PFD_MAIN_PLANE;
-			int format = ChoosePixelFormat(win32->hDC, &pfd);
-			SetPixelFormat(win32->hDC, format, &pfd);
-
 			InitGLExt();
 
 			int pixel_format_attribs[] = {
@@ -238,7 +226,7 @@ namespace boxer {
 				ASSERT(0, "Failed to set the OpenGL pixel format.");
 			}
 
-			//PIXELFORMATDESCRIPTOR pfd;
+			PIXELFORMATDESCRIPTOR pfd;
 			DescribePixelFormat(win32->hDC, pixel_format, sizeof(pfd), &pfd);
 			if (!SetPixelFormat(win32->hDC, pixel_format, &pfd)) {
 				ASSERT(0, "Failed to set OpenGL pixel format.");

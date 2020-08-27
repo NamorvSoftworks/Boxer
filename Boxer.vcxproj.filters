@@ -30,6 +30,9 @@
     <ClCompile Include="src\Boxer\Platform\Win32\Win32File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Boxer\Platform\Win32\Win32Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Boxer\Array.h">

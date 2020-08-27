@@ -7,9 +7,11 @@
 #endif
 #include <Windows.h>
 
+#include <Boxer/File.h>
+#include <Boxer/Timer.h>
+
 #include <Boxer/Graphics/Buffer.h>
 #include <Boxer/Graphics/Shader.h>
-#include <Boxer/File.h>
 
 // Some useful WGL constants
 // See https://www.opengl.org/registry/specs/ARB/wgl_create_context.txt for all values
@@ -33,15 +35,14 @@
 #define WGL_TYPE_RGBA_ARB                         0x202B
 
 // Some useful WGL functions
-typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
+typedef BOOL(WINAPI PFNWGLSWAPINTERVALEXTPROC) (int interval);
 typedef HGLRC(WINAPI PFNWGLCREATECONTEXTATTRIBSARB)(HDC hDC, HGLRC hshareContext, const int* attribList);
-
 typedef BOOL(WINAPI PFNWGLCHOOSEPIXELFORMATARB)(HDC hdc, const int* piAttribIList,
 	const FLOAT* pfAttribFList, UINT nMaxFormats, int* piFormats, UINT* nNumFormats);
 
 PFNWGLCREATECONTEXTATTRIBSARB* wglCreateContextAttribsARB;
 PFNWGLCHOOSEPIXELFORMATARB* wglChoosePixelFormatARB;
-WGLSWAPINTERVALEXT* wglSwapIntervalEXT;
+PFNWGLSWAPINTERVALEXTPROC* wglSwapIntervalEXT;
 
 namespace boxer {
 	// TODO(NeGate): Allow for multiple windows, this would require different
@@ -128,7 +129,7 @@ namespace boxer {
 			"wglCreateContextAttribsARB");
 		wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARB*)wglGetProcAddress(
 			"wglChoosePixelFormatARB");
-		wglSwapIntervalEXT = (WGLSWAPINTERVALEXT*)wglGetProcAddress(
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC*)wglGetProcAddress(
 			"wglSwapIntervalEXT");
 
 		wglMakeCurrent(dummy_dc, 0);

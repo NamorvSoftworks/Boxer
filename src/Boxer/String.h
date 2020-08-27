@@ -104,8 +104,7 @@ namespace boxer {
 			for(U64 i = 0; i < _Length; i++) {
 				str[i] = static_cast<wchar_t>(_Data[i]);
 			}
-			str[_Length] = '\0';
-
+			str[_Length] = 0;
 			return str;
 		}
 

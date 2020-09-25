@@ -7,9 +7,11 @@
 #endif
 #include <Windows.h>
 
+#include <Boxer/File.h>
+#include <Boxer/Timer.h>
+
 #include <Boxer/Graphics/Buffer.h>
 #include <Boxer/Graphics/Shader.h>
-#include <Boxer/File.h>
 
 // Some useful WGL constants
 // See https://www.opengl.org/registry/specs/ARB/wgl_create_context.txt for all values
@@ -33,14 +35,14 @@
 #define WGL_TYPE_RGBA_ARB                         0x202B
 
 // Some useful WGL functions
-typedef BOOL(WINAPI* PFNWGLSWAPINTERVALEXTPROC) (int interval);
+typedef BOOL(WINAPI PFNWGLSWAPINTERVALEXTPROC) (int interval);
 typedef HGLRC(WINAPI PFNWGLCREATECONTEXTATTRIBSARB)(HDC hDC, HGLRC hshareContext, const int* attribList);
-
 typedef BOOL(WINAPI PFNWGLCHOOSEPIXELFORMATARB)(HDC hdc, const int* piAttribIList,
 	const FLOAT* pfAttribFList, UINT nMaxFormats, int* piFormats, UINT* nNumFormats);
 
 PFNWGLCREATECONTEXTATTRIBSARB* wglCreateContextAttribsARB;
 PFNWGLCHOOSEPIXELFORMATARB* wglChoosePixelFormatARB;
+PFNWGLSWAPINTERVALEXTPROC* wglSwapIntervalEXT;
 
 namespace boxer {
 	// TODO(NeGate): Allow for multiple windows, this would require different
@@ -127,6 +129,8 @@ namespace boxer {
 			"wglCreateContextAttribsARB");
 		wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARB*)wglGetProcAddress(
 			"wglChoosePixelFormatARB");
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC*)wglGetProcAddress(
+			"wglSwapIntervalEXT");
 
 		wglMakeCurrent(dummy_dc, 0);
 		wglDeleteContext(dummy_context);
@@ -157,30 +161,36 @@ namespace boxer {
 		const DWORD style = WS_OVERLAPPEDWINDOW;
 		const DWORD exStyle = WS_EX_APPWINDOW;
 
+		// Get the size of the border.
+		RECT borderRect = { 0, 0, 0, 0 };
+		AdjustWindowRectEx(&borderRect, style, false, exStyle);
+
 		RECT rect;
 		GetClientRect(GetDesktopWindow(), &rect);
-		rect.left = (rect.right / 2) - ((_Width + 16) / 2);
-		rect.top = (rect.bottom / 2) - ((_Height + 39) / 2);
 
-		wchar_t* titleStr = title.Unicode();
-		Defer(delete[] titleStr);
+		int X = (rect.right / 2) - (_Width / 2);
+		int Y = (rect.bottom / 2) - (_Height / 2);
+		int Width = _Width;
+		int Height = _Height;
 
+		// Border rectangle in this case is negative.
+		X += borderRect.left;
+		Y += borderRect.top;
+
+		// Grow the window size by the OS border. This makes the client width/height correct.
+		Width += borderRect.right - borderRect.left;
+		Height += borderRect.bottom - borderRect.top;
+
+		wchar_t titleStr[64];
+		title.Unicode(titleStr);
+		
 		// Create the window.
 		win32->hWnd = CreateWindowExW(
-			exStyle,
-			CLASS_NAME,
-			titleStr,
-			style,
-			rect.left,
-			rect.top,
-			_Width + 16, // Windows is weird, this makes it so that _Width and _Height
-			_Height + 39, // are the actually size of the window's viewport.
-			0,
-			0,
-			win32->hInstance,
-			0
+			exStyle, CLASS_NAME, titleStr, style,
+			X, Y, Width, Height,
+			0, 0, win32->hInstance, 0
 		);
-
+		
 		if (win32->hWnd == NULL) {
 			ASSERT(0, "Win32: Failed to create a window.");
 			return;
@@ -194,18 +204,6 @@ namespace boxer {
 		// This is how you initialize modern OpenGL because Windows...
 		{
 			win32->hDC = GetDC(win32->hWnd);
-
-			PIXELFORMATDESCRIPTOR pfd = { sizeof(PIXELFORMATDESCRIPTOR) };
-			pfd.nVersion = 1;
-			pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-			pfd.iPixelType = PFD_TYPE_RGBA;
-			pfd.cColorBits = 32;
-			pfd.cDepthBits = 24;
-			pfd.cStencilBits = 8;
-			pfd.cAuxBuffers = 0;
-			pfd.iLayerType = PFD_MAIN_PLANE;
-			int format = ChoosePixelFormat(win32->hDC, &pfd);
-			SetPixelFormat(win32->hDC, format, &pfd);
 
 			InitGLExt();
 
@@ -228,7 +226,7 @@ namespace boxer {
 				ASSERT(0, "Failed to set the OpenGL pixel format.");
 			}
 
-			//PIXELFORMATDESCRIPTOR pfd;
+			PIXELFORMATDESCRIPTOR pfd;
 			DescribePixelFormat(win32->hDC, pixel_format, sizeof(pfd), &pfd);
 			if (!SetPixelFormat(win32->hDC, pixel_format, &pfd)) {
 				ASSERT(0, "Failed to set OpenGL pixel format.");
@@ -256,19 +254,35 @@ namespace boxer {
 			const char* errorStr = (const char*)glewGetErrorString(err);
 			ASSERT(0, "GLEW ERROR: %s", errorStr);
 		}
+		
+		// wglSwapIntervalEXT is the function to enable/disable vsync
+		wglSwapIntervalEXT(0);
 	}
 
 	void Application::Launch() {
 		Win32Handle* win32 = reinterpret_cast<Win32Handle*>(_Handle);
 
-		// Event handling
-		glClearColor(0.0f, 0.0f, 0.2f, 1.0f);
+		Timer::Initialize();
+
+		// No you wont run the game at more than 4 billion fps...
+		U32 FPS = 0;
+		F64 fpsTimer = 0.0;
+
+		// You can change this.
+		F64 maxFps = 300.0;
+		F64 minFrametime = 1.0 / maxFps;
+
+		F64 lastT, nowT, elapsedT;
+		lastT = Timer::Now();
+
+		// Initialize GL
+		GLCall(glClearColor(0.0f, 0.0f, 0.2f, 1.0f));
 
 		{
-			glDisable(GL_STENCIL_TEST);
-			glDisable(GL_DEPTH_TEST);
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+			GLCall(glDisable(GL_STENCIL_TEST));
+			GLCall(glDisable(GL_DEPTH_TEST));
+			GLCall(glEnable(GL_BLEND));
+			GLCall(glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE));
 
 			Shader shader;
 			shader.AddShader(FileBlock("assets/Standard.vert").Data, GL_VERTEX_SHADER);
@@ -292,31 +306,64 @@ namespace boxer {
 
 			GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0));
 			GLCall(glBindVertexArray(0));
-
-			bool running = true;
-			while (running) {
+			
+			while (1) {
+				// Event handling
 				MSG message;
-				while (PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE) > 0) {
+				if (PeekMessage(&message, NULL, NULL, NULL, PM_REMOVE) > 0) {
 					TranslateMessage(&message);
 					DispatchMessage(&message);
 
-					if (message.message == WM_QUIT) running = false;
+					if (message.message == WM_QUIT) break;
 				}
 
-				GLCall(glViewport(0, 0, _Width, _Height));
-				GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+				// FPS limiter.
+				do {
+					nowT = Timer::Now();
+					elapsedT = nowT - lastT;
+				} while (elapsedT < minFrametime);
 
-				glBindVertexArray(VAO);
-				vbo.Bind();
+				// TODO: Update the game
+				{
 
-				shader.Bind();
+				}
 
-				GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));
+				// Render the game
+				{
+					GLCall(glViewport(0, 0, _Width, _Height));
+					GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-				SwapBuffers(win32->hDC);
+					glBindVertexArray(VAO);
+					vbo.Bind();
+
+					shader.Bind();
+
+					GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));
+
+					SwapBuffers(win32->hDC);
+					FPS++;
+				}
+
+				// FPS Counter
+				fpsTimer += elapsedT;
+
+				if (fpsTimer > 1.0) {
+					wchar_t titleStr[64];
+					_Title.Unicode(titleStr);
+
+					wchar_t temp[64];
+					swprintf_s(temp, L"%.*s - FPS %d\n", _Title.Length(), titleStr, FPS);
+					SetWindowText(win32->hWnd, temp);
+
+					fpsTimer -= 1.0;
+					FPS = 0;
+				}
+
+				// Advance to the next frame
+				lastT = nowT;
 			}
 		}
-
+		
 		Close();
 	}
 

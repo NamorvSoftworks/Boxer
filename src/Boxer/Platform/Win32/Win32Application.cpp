@@ -269,8 +269,8 @@ namespace boxer {
 		F64 fpsTimer = 0.0;
 
 		// You can change this.
-		F64 maxFps = 300.0;
-		F64 minFrametime = 1.0 / maxFps;
+		//F64 maxFps = 300.0;
+		//F64 minFrametime = 1.0 / maxFps;
 
 		F64 lastT, nowT, elapsedT;
 		lastT = Timer::Now();
@@ -306,6 +306,12 @@ namespace boxer {
 
 			GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0));
 			GLCall(glBindVertexArray(0));
+			HANDLE timer_handle = CreateWaitableTimerW(NULL, FALSE, NULL);
+			LARGE_INTEGER due_time = {};
+			// 16fps = -600000LL
+			// 32fps = -300000LL
+			// 64fps = -150000LL
+			due_time.QuadPart = -150000LL;
 			
 			while (1) {
 				// Event handling
@@ -318,11 +324,15 @@ namespace boxer {
 				}
 
 				// FPS limiter.
-				do {
+				/*do {
 					nowT = Timer::Now();
 					elapsedT = nowT - lastT;
-				} while (elapsedT < minFrametime);
-
+				} while (elapsedT < minFrametime);*/
+				if (SetWaitableTimer(timer_handle, &due_time, 0, NULL, NULL, FALSE) == 0)
+					throw;
+				WaitForSingleObject(timer_handle, INFINITE);
+				nowT = Timer::Now();
+				elapsedT = nowT - lastT;
 				// TODO: Update the game
 				{
 
@@ -362,6 +372,7 @@ namespace boxer {
 				// Advance to the next frame
 				lastT = nowT;
 			}
+			CloseHandle(timer_handle);
 		}
 		
 		Close();
